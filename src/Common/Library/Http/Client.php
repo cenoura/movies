@@ -49,20 +49,8 @@ class Client
     public function setRequestMethod($method)
     {
         switch (strtoupper($method)) {
-            case 'HEAD':
-                $option = CURLOPT_NOBODY;
-                $value  = true;
-
-                break;
-
             case 'GET':
                 $option = CURLOPT_HTTPGET;
-                $value  = true;
-
-                break;
-
-            case 'POST':
-                $option = CURLOPT_POST;
                 $value  = true;
 
                 break;
