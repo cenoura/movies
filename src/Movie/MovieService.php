@@ -84,12 +84,10 @@ class MovieService
         $genreService = new GenreService();
         $genres = $genreService->getMovieGenres();
 
-        $movies = [];
-
-        foreach ($responseBody->results as $movie) {
+        $movies = array_map(function($movie) use ($genres) {
             $movie->genres = $this->getMovieGenresNamesArray($movie->genre_ids, $genres);
-            $movies[] = MovieFactory::create($movie);
-        }
+            return MovieFactory::create($movie);
+        }, $responseBody->results ?? []);
 
         return [
             'totalPages' => $responseBody->total_pages,
