@@ -3,6 +3,7 @@
 namespace Cenoura\Movie;
 
 use Cenoura\Common\Library\Http\Client;
+use Cenoura\Common\Library\Http\Response;
 
 class MovieService
 {
@@ -26,25 +27,7 @@ class MovieService
             throw new \Exception('Error getting information from API');
         }
 
-        $responseBody = json_decode($response->getBody());
-
-        $results = $responseBody->results;
-        $totalPages = $responseBody->total_pages;
-
-        $genreService = new GenreService();
-        $genres = $genreService->getMovieGenres();
-
-        $movies = [];
-
-        foreach ($results as $movie) {
-            $movie->genres = $this->getMovieGenresNamesArray($movie->genre_ids, $genres);
-            $movies[] = MovieFactory::create($movie);
-        }
-
-        return [
-            'totalPages' => $totalPages,
-            'movies' => $movies
-        ];
+        return $this->getMovieCollectionFromResponse($response);
     }
 
     public function getMovie($id)
@@ -84,25 +67,7 @@ class MovieService
             throw new \Exception('Error getting information from API');
         }
 
-        $responseBody = json_decode($response->getBody());
-
-        $results = $responseBody->results;
-        $totalPages = $responseBody->total_pages;
-
-        $genreService = new GenreService();
-        $genres = $genreService->getMovieGenres();
-
-        $movies = [];
-
-        foreach ($results as $movie) {
-            $movie->genres = $this->getMovieGenresNamesArray($movie->genre_ids, $genres);
-            $movies[] = MovieFactory::create($movie);
-        }
-
-        return [
-            'totalPages' => $totalPages,
-            'movies' => $movies
-        ];
+        return $this->getMovieCollectionFromResponse($response);
     }
 
     protected function getMovieGenresNamesArray($movieGenres, $allGenres)
@@ -110,5 +75,25 @@ class MovieService
         return array_values(array_filter($allGenres, function($id) use ($movieGenres) {
             return in_array($id, $movieGenres);
         }, ARRAY_FILTER_USE_KEY));
+    }
+
+    protected function getMovieCollectionFromResponse(Response $response)
+    {
+        $responseBody = json_decode($response->getBody());
+
+        $genreService = new GenreService();
+        $genres = $genreService->getMovieGenres();
+
+        $movies = [];
+
+        foreach ($responseBody->results as $movie) {
+            $movie->genres = $this->getMovieGenresNamesArray($movie->genre_ids, $genres);
+            $movies[] = MovieFactory::create($movie);
+        }
+
+        return [
+            'totalPages' => $responseBody->total_pages,
+            'movies' => $movies
+        ];
     }
 }
