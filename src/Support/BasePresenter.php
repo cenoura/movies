@@ -17,8 +17,8 @@ class BasePresenter
 
         if (in_array($methodName, $classMethods)) {
             return call_user_func_array([$this->subject, $methodName], $arguments);
-        } else {
-            throw new \Exception("Method " . $methodName . " not found.");
         }
+
+        throw new \Exception("Method " . $methodName . " not found.");
     }
 }
