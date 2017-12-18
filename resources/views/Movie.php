@@ -4,15 +4,9 @@
 </head>
 <body>
     <h1><?=$movie->getOriginalTitle();?></h1>
-    <img src="http://image.tmdb.org/t/p/w185<?=$movie->getPosterPath();?>" />
-    <h4>Genres: <?=implode(', ', $movie->getGenres());?></h4>
+    <img src="<?=$movie->getImageUrl();?>" />
+    <h4>Genres: <?=$movie->getGenres();?></h4>
     <h4>Overview: <?=$movie->getOverview();?></h4>
-    <?php if ($movie->getReleaseDate()) :
-        $movie->getReleaseDate()->format('F dS Y');
-    else:
-        $date = 'N/A';
-    endif;
-    ?>
-    <h4>Release date: <?=$date?></h4>
+    <h4>Release date: <?=$movie->getReleaseDate();?></h4>
 </body>
 </html>

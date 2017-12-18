@@ -23,27 +23,14 @@
     <?php foreach ($result['movies'] as $movie): ?>
     <tr>
         <td>
-            <?php if ($movie->getPosterPath()) :
-                $img = $movie->getPosterPath();
-            else :
-                $img = $movie->getBackdropPath();
-            endif;
-            ?>
-            <img src="http://image.tmdb.org/t/p/w185<?=$img?>" />
+            <img src="<?=$movie->getImageUrl();?>" />
         </td>
         <td>
             <h1><?=$movie->getOriginalTitle();?></h1>
-
-            <h4>Genres: <?=implode(', ', $movie->getGenres());?></h4>
+            <h4>Genres: <?=$movie->getGenres();?></h4>
             <h4>Overview: <?=$movie->getOverview();?></h4>
-            <?php if ($movie->getReleaseDate()):
-                $releaseDate = $movie->getReleaseDate()->format('F dS Y');
-            else:
-                $releaseDate = 'N/A';
-            endif;
-            ?>
-            <h4>Release date: <?=$releaseDate?></h4>
-            <h4><a href="./?controller=movie&action=getOne&id=<?=$movie->getId();?>">Go to movie page</a></h4>
+            <h4>Release date: <?=$movie->getReleaseDate();?></h4>
+            <h4><a href="<?=$movie->getUrl();?>">Go to movie page</a></h4>
         </td>
     </tr>
     <?php endforeach; ?>
