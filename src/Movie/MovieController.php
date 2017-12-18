@@ -32,6 +32,8 @@ class MovieController
 
             $result = $this->service->getUpcomingMovies($page);
 
+            $result['movies'] = $this->mapMovieCollectionToPresenter($result['movies']);
+
             require APP_VIEWS_DIR . 'MovieList.php';
         } catch (\Exception $e) {
             echo $e->getMessage();
@@ -56,6 +58,8 @@ class MovieController
 
             $result = $this->service->searchMovies($query, $page);
 
+            $result['movies'] = $this->mapMovieCollectionToPresenter($result['movies']);
+
             require APP_VIEWS_DIR . 'MovieList.php';
         } catch (\Exception $e) {
             echo $e->getMessage();
@@ -71,12 +75,18 @@ class MovieController
                 throw new \Exception('Please inform movie id');
             }
 
-            $movie = $this->service->getMovie($id);
+            $movie = new MoviePresenter($this->service->getMovie($id));
 
             require APP_VIEWS_DIR . 'Movie.php';
         } catch (\Exception $e) {
             echo $e->getMessage();
         }
+    }
 
+    protected function mapMovieCollectionToPresenter(array $movies)
+    {
+        return array_map(function($movie) {
+            return new MoviePresenter($movie);
+        }, $movies);
     }
 }
